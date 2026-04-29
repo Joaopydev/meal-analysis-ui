@@ -1,12 +1,12 @@
+import { useCameraPermissions, CameraView } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
 import { CameraIcon, CheckIcon, Trash2Icon, XIcon} from 'lucide-react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Image, Modal, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../styles/colors';
 import { cn } from '../utils/cn';
 import { Button } from './Button';
-import { useAudioRecorder, useAudioRecorderState, RecordingPresets, AudioModule, setAudioModeAsync, useAudioPlayer } from 'expo-audio';
 
 
 interface IPictureModalProps {
@@ -19,24 +19,34 @@ export function PictureModal({
     onClose,
     open,
 }: IPictureModalProps) {
-    const [hasPermisson, setHasPermission] = useState(false)
     const [pictureUri, setPictureUri] = useState<null | string>(null)
+    const [permission, requestPermission] = useCameraPermissions()
+    const cameraRef = useRef<CameraView>(null)
 
     function handleCloseModal() {
         onClose()
         setPictureUri(null)
     }
 
-    function handleTakePicture() {
-        setPictureUri("mock-picture-uri")
+    async function handleTakePicture() {
+        if (!cameraRef.current) return
+
+        const { uri } = await cameraRef.current.takePictureAsync({
+            imageType: "jpg",
+        })
+        setPictureUri(uri)
     }
 
     function handleRequestPermission() {
-        setHasPermission(true)
+        requestPermission()
     }
 
     function handleDeletePicture() {
         setPictureUri(null)
+    }
+
+    if (!permission) {
+        return null
     }
 
     return (
@@ -50,7 +60,7 @@ export function PictureModal({
             <StatusBar style="light" />
 
             <View className="flex-1 bg-black">
-                {!hasPermisson && (
+                {!permission.granted && (
                     <View className='flex-1 items-center justify-center'>
                         <Text className="text-white text-center px-10 text-base font-sans-regular mb-4">
                             Precisamos de permissão para acessar a câmera do seu dispositivo
@@ -61,7 +71,7 @@ export function PictureModal({
                     </View>
                 )}
 
-                {hasPermisson && (
+                {permission.granted && (
                     <SafeAreaProvider>
                         <SafeAreaView className="flex-1">
                             <View className="flex-row p-5">
@@ -71,19 +81,15 @@ export function PictureModal({
                             </View>
 
                             {!pictureUri && (
-                                <View className="flex-1 bg-gray-800">
-                                    <Text className="text-white text-lg font-sans-regular">
-                                        Câmera simulada
-                                    </Text>
-                                </View>
+                                <CameraView ref={cameraRef} style={{ flex: 1 }} />
                             )}
 
                             {pictureUri && (
-                                <View className="flex-1 bg-gray-800 items-center justify-center">
-                                    <Text className="text-white text-lg font-sans-regular">
-                                        Foto capturada
-                                    </Text>
-                                </View>
+                                <Image 
+                                  source={{ uri: pictureUri }}
+                                  className="flex-1"
+                                  resizeMode="contain"
+                                />
                             )}
 
                            {!pictureUri && (
