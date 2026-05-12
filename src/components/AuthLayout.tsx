@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface IAuthLayoutProps {
-  icon: string;
+  icon: string | React.ReactNode;
   title: string;
   subtitle: string;
   children?: React.ReactNode;
@@ -17,14 +17,17 @@ export function AuthLayout({ icon, title, subtitle, children }: IAuthLayoutProps
         <View className="h-[98px] bg-lime-400" />
 
         <View className="size-12 bg-white items-center justify-center rounded-xl -mt-6 mx-auto border-2 border-lime-400">
-          <Text>{icon}</Text>
+          {typeof icon === "string"
+            ? <Text>{icon}</Text>
+            : icon
+          }
         </View>
 
         <View className="mx-auto mt-6 items-center">
           <Text className="text-black-700 font-sans-semibold tracking-[-0.32px] text-[32px] text-center">
             {title}
           </Text>
-          <Text className="mt-1 text-gray-700 text-base font-sans-regular">
+          <Text className="mt-1 text-gray-700 text-base font-sans-regular break-words ">
             {subtitle}
           </Text>
         </View>
