@@ -35,22 +35,7 @@ export function SignupStep() {
                         autoComplete="password"
                         isPasswordInput={true}
                         />
-                        <Input
-                        label="Confirmar senha"
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        autoComplete="password"
-                        isPasswordInput={true}
-                        />
                     </View>
-                </View>
-                <View className="flex-row gap-6">
-                    <Button onPress={router.back} size="icon" color="gray">
-                        <ArrowLeftIcon size={20} color={colors.black[700]}/>
-                    </Button>
-                    <Button className="flex-1 justify-center">
-                        Criar conta
-                    </Button>
                 </View>
             </SafeAreaView>
         </KeyboardAvoidingView>
