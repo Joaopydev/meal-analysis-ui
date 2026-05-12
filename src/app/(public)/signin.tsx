@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, Platform, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform, View } from "react-native";
 import { router } from "expo-router";
 import { ArrowLeftIcon, UserIcon} from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,6 +10,7 @@ import { AuthLayout } from "../../components/AuthLayout";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { colors } from "../../styles/colors";
+import { useAuth } from "../../hooks/useAuth";
 
 const schema = z.object({
     email: z.email("Informe um e-mail válido"),
@@ -26,8 +27,15 @@ export default function SignIn() {
         }
     })
 
-    const handleSubmit = form.handleSubmit((formData) => {
+    const { signIn } = useAuth()
 
+    const handleSubmit = form.handleSubmit(async (formData) => {
+        try {
+            await signIn(formData)
+        } catch (error) {
+            console.error(error)
+            Alert.alert("Credenciais Inválidas")
+        }
     })
 
     return (

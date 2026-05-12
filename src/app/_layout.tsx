@@ -10,19 +10,25 @@ import {
   HostGrotesk_700Bold,
 } from "@expo-google-fonts/host-grotesk"
 
+import { useAuth } from "../hooks/useAuth";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+
 import "../styles/global.css"
 import { AuthContextProvider } from "../contexts/AuthContexts";
-import { useAuth } from "../hooks/useAuth";
 
 SplashScreen.preventAutoHideAsync()
+
+const queryClient = new QueryClient()
 
 
 export default function Layout() {
     return (
         <SafeAreaProvider>
-            <AuthContextProvider>
-                <RootLayout />
-            </AuthContextProvider>
+            <QueryClientProvider client={queryClient}>
+                <AuthContextProvider>
+                    <RootLayout />
+                </AuthContextProvider>
+            </QueryClientProvider>
         </SafeAreaProvider>
     )
 }

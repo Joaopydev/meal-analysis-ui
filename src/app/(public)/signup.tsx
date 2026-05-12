@@ -1,7 +1,7 @@
 import { ArrowLeftIcon, ArrowRightIcon, CakeIcon, TargetIcon, DumbbellIcon, RulerIcon, VenusAndMarsIcon, UserPlusIcon, ZapIcon } from "lucide-react-native";
 import { router } from "expo-router";
 import { useState } from "react";
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 
 import { SignupStep } from "../../components/SignupSteps/SignupStep";
 import { AuthLayout } from "../../components/AuthLayout";
@@ -17,13 +17,21 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema } from "../../components/SignupSteps/signUpSchema";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../../hooks/useAuth";
 
 
 export default function SignUp() {
     const [currentStepIndex, setCurrentStepIndex] = useState(0)
 
     const form = useForm({
-        resolver: zodResolver(signUpSchema)
+        resolver: zodResolver(signUpSchema),
+        defaultValues: {
+            account: {
+                name: "",
+                email: "",
+                password: "",
+            }
+        }
     })
 
     const steps = [
@@ -74,6 +82,28 @@ export default function SignUp() {
     const currenStep = steps[currentStepIndex]
     const isLastStep = currentStepIndex === steps.length - 1
 
+    const { signUp } = useAuth()
+
+    console.log(form.formState.errors)
+
+    const handleSubmit = form.handleSubmit(async (formData) => {
+
+        const [day, month, year] = formData.birthDate.split("/")
+        try {
+            await signUp({
+                goal: formData.goal,
+                gender: formData.gender,
+                height: Number(formData.height),
+                weight: Number(formData.weight),
+                birthDate: `${year}-${month}-${day}`,
+                activityLevel: Number(formData.activityLevel),
+                account: {...formData.account}
+            })
+        } catch {
+            Alert.alert("Não foi possivel criar sua conta")
+        }
+    })
+
     function handlePreviousStep() {
         if (currentStepIndex === 0) {
             router.back()
@@ -115,7 +145,7 @@ export default function SignUp() {
                             <Button onPress={handlePreviousStep} size="icon" color="gray">
                                 <ArrowLeftIcon size={20} color={colors.black[700]}/>
                             </Button>
-                            <Button className="flex-1 justify-center">
+                            <Button className="flex-1 justify-center" onPress={handleSubmit}>
                                 Criar conta
                             </Button>
                         </View>
