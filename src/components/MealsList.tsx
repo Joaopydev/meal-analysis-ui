@@ -3,63 +3,51 @@ import { MealCard } from "./MealCard"
 import { DailyStats } from "./DailyStats"
 import { DataSwitcher } from "./DataSwitcher"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { useAuth } from "../hooks/useAuth"
+import { useQuery } from "@tanstack/react-query"
+import { httpClient } from "../services/httpClient"
 
 
-const meals = [
-    {
-        id: String(Math.random()),
-        name: "Café da manhã"
-    },
-    {
-        id: String(Math.random()),
-        name: "Café da manhã"
-    },
-    {
-        id: String(Math.random()),
-        name: "Café da manhã"
-    },
-    {
-        id: String(Math.random()),
-        name: "Café da manhã"
-    },
-    {
-        id: String(Math.random()),
-        name: "Café da manhã"
-    },
-    {
-        id: String(Math.random()),
-        name: "Café da manhã"
-    },
-    {
-        id: String(Math.random()),
-        name: "Café da manhã"
-    },
-]
+type Meal = {
+    id: string,
+    name: string,
+    icon: string,
+    foods: {
+        name: string,
+        calories: number,
+        proteins: number,
+        carbohydrates: number,
+        fats: number,
+    }[],
+    createdAt: string
+}
+
 
 function MealsListHeader() {
+    const { user } = useAuth()
     return (
         <>
             <DataSwitcher />
             <View className="mt-2">
             <DailyStats 
                 calories={{
-                    current: 2000,
-                    goal: 2500,
+                    current: 0,
+                    goal: user!.calories,
                 }
                 }
                 proteins={{
-                    current: 500,
-                    goal: 2500,
+                    current: 0,
+                    goal: user!.proteins,
                 }
                 }
                 carbohydrates={{
-                    current: 500,
-                    goal: 2500,
+                    current: 0,
+                    goal: user!.carbohydrates,
                 }
                 }
                 fats={{
-                    current: 500,
-                    goal: 2500,
+                    current: 0,
+                    goal: user!.fats,
                 }
                 }
             />
@@ -80,8 +68,20 @@ function Separator() {
     )
 }
 
+
 export function MealsList() {
     const { bottom } = useSafeAreaInsets()
+    const { data: meals } = useQuery({
+        queryKey: ['meals'],
+        queryFn: async () => {
+            const { data } = await httpClient.get<{ meals: Meal[] }>("/meals", {
+                params: {
+                    date: "2026-06-14"
+                }
+            })
+            return data.meals
+        }
+    })
 
     return (
         <FlatList
@@ -91,6 +91,11 @@ export function MealsList() {
             //contentContainerStyle={{ gap: 32 }}
             // contentContainerClassName="gap-8 px-5"
             ListHeaderComponent={<MealsListHeader />}
+            ListEmptyComponent={
+                <View className="px-5">
+                    <Text className="text-black-700 text-base font-sans-medium">Nenhuma refeição cadastra</Text>
+                </View>
+            }
             ItemSeparatorComponent={Separator}
             renderItem={({ item: meal }) => (
                 <View className="mx-5">
