@@ -45,12 +45,15 @@ function RootLayout() {
     })
 
     useEffect(() => {
-        if (loaded || error && !isLoading) {
-        SplashScreen.hideAsync()
+        async function render() {
+            if ((loaded || error) && !isLoading) {
+                await SplashScreen.hideAsync()
+            }
         }
-    }, [loaded, error])
+        render()
+    }, [loaded, error, isLoading])
 
-    if (!loaded && !error) {
+    if (!loaded || isLoading) {
         return null
     }
 

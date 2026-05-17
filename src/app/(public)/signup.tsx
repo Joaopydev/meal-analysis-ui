@@ -145,7 +145,7 @@ export default function SignUp() {
                             <Button onPress={handlePreviousStep} size="icon" color="gray">
                                 <ArrowLeftIcon size={20} color={colors.black[700]}/>
                             </Button>
-                            <Button className="flex-1 justify-center" onPress={handleSubmit}>
+                            <Button className="flex-1 justify-center" onPress={handleSubmit} loading={form.formState.isSubmitting}>
                                 Criar conta
                             </Button>
                         </View>
