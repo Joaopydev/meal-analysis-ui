@@ -71,16 +71,19 @@ function Separator() {
 
 export function MealsList() {
     const { bottom } = useSafeAreaInsets()
+
     const { data: meals } = useQuery({
         queryKey: ['meals'],
         queryFn: async () => {
             const { data } = await httpClient.get<{ meals: Meal[] }>("/meals", {
                 params: {
-                    date: "2026-06-14"
+                    date: "2026-05-20",
+                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
                 }
             })
+            console.log(data)
             return data.meals
-        }
+        },
     })
 
     return (
@@ -102,6 +105,8 @@ export function MealsList() {
                     <MealCard
                         id={meal.id}
                         name={meal.name}
+                        icon={meal.icon}
+                        foods={meal.foods}
                     />
                 </View>
             )}
