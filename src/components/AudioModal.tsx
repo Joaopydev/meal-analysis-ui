@@ -3,10 +3,14 @@ import { CheckIcon, MicIcon, PauseIcon, PlayIcon, SquareIcon, Trash2Icon, XIcon 
 import { useEffect, useState } from 'react';
 import { Alert, Modal, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useAudioRecorder, useAudioRecorderState, RecordingPresets, AudioModule, setAudioModeAsync, useAudioPlayer } from 'expo-audio';
+import { router } from 'expo-router';
+
 import { colors } from '../styles/colors';
 import { cn } from '../utils/cn';
 import { Button } from './Button';
-import { useAudioRecorder, useAudioRecorderState, RecordingPresets, AudioModule, setAudioModeAsync, useAudioPlayer } from 'expo-audio';
+import { useCreateMeal } from '../hooks/useCreateMeal';
+
 
 interface IAudioModalProps {
   open: boolean;
@@ -20,6 +24,13 @@ export function AudioModal({ onClose, open }: IAudioModalProps) {
   const audioRecorder = useAudioRecorder(RecordingPresets.HIGH_QUALITY)
   const { isRecording } = useAudioRecorderState(audioRecorder)
   const player = useAudioPlayer(audioUri)
+  const { createMeal, isLoading } = useCreateMeal({
+      fileType: "audio/m4a",
+      onSuccess: mealId => {
+          router.push(`/meals/${mealId}`)
+          handleCloseModal()
+      }
+  })
 
   useEffect(() => {
     (async () => {
@@ -156,12 +167,20 @@ export function AudioModal({ onClose, open }: IAudioModalProps) {
                   </Button>
                 )}
                 {isPlaying && (
-                  <Button size="icon" color="dark" onPress={handlePausePlaying}>
+                  <Button 
+                    size="icon" 
+                    color="dark" 
+                    onPress={handlePausePlaying}
+                  >
                     <PauseIcon size={20} color={colors.lime[600]} />
                   </Button>
                 )}
 
-                <Button size="icon">
+                <Button
+                  size="icon" 
+                  onPress={() => createMeal(audioUri)}
+                  loading={isLoading}
+                >
                   <CheckIcon size={20} color={colors.black[700]} />
                 </Button>
               </View>
