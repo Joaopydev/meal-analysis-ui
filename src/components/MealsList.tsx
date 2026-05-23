@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { useAuth } from "../hooks/useAuth"
 import { useQuery } from "@tanstack/react-query"
 import { httpClient } from "../services/httpClient"
+import { useDate } from "../contexts/DateContext/useDate"
 
 
 type Meal = {
@@ -71,17 +72,17 @@ function Separator() {
 
 export function MealsList() {
     const { bottom } = useSafeAreaInsets()
+    const { currentDate } = useDate()
 
     const { data: meals } = useQuery({
-        queryKey: ['meals'],
+        queryKey: ['meals', currentDate],
         queryFn: async () => {
             const { data } = await httpClient.get<{ meals: Meal[] }>("/meals", {
                 params: {
-                    date: "2026-05-20",
+                    date: currentDate,
                     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
                 }
             })
-            console.log(data)
             return data.meals
         },
     })
