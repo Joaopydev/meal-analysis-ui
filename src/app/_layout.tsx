@@ -15,6 +15,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import "../styles/global.css"
 import { AuthContextProvider } from "../contexts/AuthContexts";
+import { DateProvider } from "../contexts/DateContext/CurrentDateContext";
 
 SplashScreen.preventAutoHideAsync()
 
@@ -26,7 +27,9 @@ export default function Layout() {
         <SafeAreaProvider>
             <QueryClientProvider client={queryClient}>
                 <AuthContextProvider>
-                    <RootLayout />
+                    <DateProvider>
+                        <RootLayout />
+                    </DateProvider>
                 </AuthContextProvider>
             </QueryClientProvider>
         </SafeAreaProvider>
