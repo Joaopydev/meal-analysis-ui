@@ -1,10 +1,12 @@
 import { View, Text, FlatList } from "react-native"
+import { useMemo } from "react"
+import { useSafeAreaInsets } from "react-native-safe-area-context"
+import { useQuery } from "@tanstack/react-query"
+
 import { MealCard } from "./MealCard"
 import { DailyStats } from "./DailyStats"
 import { DataSwitcher } from "./DataSwitcher"
-import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { useAuth } from "../hooks/useAuth"
-import { useQuery } from "@tanstack/react-query"
 import { httpClient } from "../services/httpClient"
 import { useDate } from "../contexts/DateContext/useDate"
 
@@ -23,31 +25,54 @@ type Meal = {
     createdAt: string
 }
 
+interface IMealsListHeaderProps {
+    meals: Meal[]
+}
 
-function MealsListHeader() {
+
+function MealsListHeader({ meals }: IMealsListHeaderProps) {
     const { user } = useAuth()
+
+    const summary = useMemo(() => (
+        (meals || []).flatMap(meal => meal.foods).reduce(
+            (acc, food) => {
+                const proteinsCalories = food.proteins * 4;
+                const carbohydratesCalories = food.carbohydrates * 4;
+                const fatsCalories = food.fats * 9;
+                const totalCalories = Math.round(proteinsCalories + carbohydratesCalories + fatsCalories);
+
+                return {
+                    calories: acc.calories + totalCalories,
+                    proteins: acc.proteins + food.proteins,
+                    carbohydrates: acc.carbohydrates + food.carbohydrates,
+                    fats: acc.fats + food.fats,
+                };
+            },
+            { calories: 0, proteins: 0, carbohydrates: 0, fats: 0 },
+        )
+    ), [meals]);
     return (
         <>
             <DataSwitcher />
             <View className="mt-2">
             <DailyStats 
                 calories={{
-                    current: 0,
+                    current: summary.calories,
                     goal: user!.calories,
                 }
                 }
                 proteins={{
-                    current: 0,
+                    current: summary.proteins,
                     goal: user!.proteins,
                 }
                 }
                 carbohydrates={{
-                    current: 0,
+                    current: summary.carbohydrates,
                     goal: user!.carbohydrates,
                 }
                 }
                 fats={{
-                    current: 0,
+                    current: summary.fats,
                     goal: user!.fats,
                 }
                 }
@@ -74,7 +99,7 @@ export function MealsList() {
     const { bottom } = useSafeAreaInsets()
     const { currentDate } = useDate()
 
-    const { data: meals } = useQuery({
+    const { data: meals, isLoading } = useQuery({
         queryKey: ['meals', currentDate],
         queryFn: async () => {
             const { data } = await httpClient.get<{ meals: Meal[] }>("/meals", {
@@ -94,10 +119,14 @@ export function MealsList() {
             contentContainerStyle={{ paddingBottom: 80 + bottom + 16 }}
             //contentContainerStyle={{ gap: 32 }}
             // contentContainerClassName="gap-8 px-5"
-            ListHeaderComponent={<MealsListHeader />}
+            ListHeaderComponent={<MealsListHeader meals={meals || []} />}
             ListEmptyComponent={
                 <View className="px-5">
-                    <Text className="text-black-700 text-base font-sans-medium">Nenhuma refeição cadastra</Text>
+                    {isLoading ? (
+                        <Text className="text-black-700 text-base font-sans-medium">Carregando...</Text>
+                    ) : (
+                        <Text className="text-black-700 text-base font-sans-medium">Nenhuma refeição cadastrada</Text>
+                    )}
                 </View>
             }
             ItemSeparatorComponent={Separator}
@@ -108,6 +137,7 @@ export function MealsList() {
                         name={meal.name}
                         icon={meal.icon}
                         foods={meal.foods}
+                        createdAt={meal.createdAt}
                     />
                 </View>
             )}

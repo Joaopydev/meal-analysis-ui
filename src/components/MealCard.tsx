@@ -1,5 +1,6 @@
 import { Link } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
+import { formatMealTime } from "../utils/formatDate";
 
 
 interface IMealCardProps {
@@ -13,9 +14,10 @@ interface IMealCardProps {
         carbohydrates: number,
         fats: number,
     }[]
+    createdAt: string
 }
 
-export function MealCard({ name, id, icon, foods }: IMealCardProps) {
+export function MealCard({ name, id, icon, foods, createdAt }: IMealCardProps) {
 
     function getFoodNames() {
         return foods.map(food => food.name).join(", ")
@@ -24,7 +26,7 @@ export function MealCard({ name, id, icon, foods }: IMealCardProps) {
         <Link href={`/meals/${id}`} asChild>
             <TouchableOpacity>
                 <Text className="text-base font-sans-regular text-gray-700">
-                    HOJE, 12h25
+                    {formatMealTime(createdAt)}
                 </Text>
 
                 <View className="mt-2 px-4 py-5 flex-row gap-3 items-center border border-gray-400 rounded-2xl">
