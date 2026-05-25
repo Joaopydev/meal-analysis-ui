@@ -5,7 +5,7 @@ import { httpClient } from "../services/httpClient"
 
 
 type CreateMealResponse = {
-  mealId: string
+  meal: string
   presignedUrl: string
 }
 
@@ -18,16 +18,18 @@ export function useCreateMeal({ fileType, onSuccess }: CreateMealParams) {
     const { mutateAsync, isPending } = useMutation({
         mutationFn: async (uri: string) => {
             const { data } = await httpClient.post<CreateMealResponse>("/meals", {
-                fileType: fileType
+                fileType: fileType,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             })
             await FileSystem.uploadAsync(data.presignedUrl, uri, {
                 httpMethod: "PUT",
                 uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
                 headers: {
-                    "Content-Type": fileType
+                    "Content-Type": fileType,
+                    "x-amz-meta-timezone": Intl.DateTimeFormat().resolvedOptions().timeZone
                 }
             })
-            return { mealId: data.mealId }
+            return { mealId: data.meal }
         },
         onSuccess: ({ mealId }) => {
             onSuccess(mealId)
