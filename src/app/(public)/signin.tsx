@@ -10,7 +10,7 @@ import { AuthLayout } from "../../components/AuthLayout";
 import { Input } from "../../components/Input";
 import { Button } from "../../components/Button";
 import { colors } from "../../styles/colors";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext/useAuth";
 
 const schema = z.object({
     email: z.email("Informe um e-mail válido"),

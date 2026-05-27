@@ -12,12 +12,13 @@ import { BirthDateStep } from "../../components/SignupSteps/BirthDateStep";
 import { HeightStep } from "../../components/SignupSteps/HeightStep";
 import { WeightStep } from "../../components/SignupSteps/WeightStep";
 import { ActivityLevelStep } from "../../components/SignupSteps/ActivityLevelStep";
-import { Button } from "../../components/Button";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUpSchema } from "../../components/SignupSteps/signUpSchema";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../contexts/AuthContext/useAuth";
+
+import { Button } from "../../components/Button";
 
 
 export default function SignUp() {

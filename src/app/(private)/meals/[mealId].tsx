@@ -1,57 +1,22 @@
 import { ActivityIndicator, View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 
-import { httpClient } from "../../../services/httpClient";
+import { useLocalSearchParams } from "expo-router";
+import { useMemo } from "react";
+
+import { useMeal } from "../../../hooks/queries/useMeal";
+import { useDate } from "../../../contexts/DateContext/useDate";
+
 import { Logo } from "../../../components/Logo";
 import { MealDetailHeader } from "../../../components/MealDetailHeader";
 import { MealDetailMacro } from "../../../components/MealDetailMacro";
 import { MealDetailFoods } from "../../../components/MealDetailFoods";
-import { useMemo } from "react";
-import { useDate } from "../../../contexts/DateContext/useDate";
 
-type Food = {
-    name: string
-    quantity: string
-    calories: number
-    proteins: number
-    carbohydrates: number
-    fats: number
-}
-
-type Meal = {
-    id: string
-    name: string
-    icon: string
-    status: "uploading" | "processing" | "success" | "failed"
-    foods: Food[],
-    createdAt: string
-}
 
 export default function MealDetails() {
-    const { mealId } = useLocalSearchParams()
-    const queryClient = useQueryClient()
+    const { mealId } = useLocalSearchParams<{ mealId: string }>()
     const { currentDate } = useDate()
-
-    const { data: meal, isFetching } = useQuery<Meal>({
-        queryKey: ['meal', mealId],
-        enabled: !!mealId,
-        queryFn: async () => {
-            const { data } = await httpClient.get<{ meal: Meal }>(`/meals/${mealId}`)
-            
-            return data.meal
-        },
-        refetchInterval: (query) => {
-            if (query.state.data?.status === "success") {
-                queryClient.invalidateQueries({
-                    queryKey: ["meals", currentDate]
-                })
-                return false
-            }
-            return 2_000
-        }
-    })
+    const { meal, isFetching } = useMeal({ mealId, currentDate })
 
     const summary = useMemo(() => (
         (meal?.foods ?? []).reduce(

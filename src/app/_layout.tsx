@@ -10,11 +10,11 @@ import {
   HostGrotesk_700Bold,
 } from "@expo-google-fonts/host-grotesk"
 
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../contexts/AuthContext/useAuth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import "../styles/global.css"
-import { AuthContextProvider } from "../contexts/AuthContexts";
+import { AuthContextProvider } from "../contexts/AuthContext/AuthProvider";
 import { DateProvider } from "../contexts/DateContext/CurrentDateContext";
 
 SplashScreen.preventAutoHideAsync()
