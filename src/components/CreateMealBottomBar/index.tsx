@@ -1,10 +1,10 @@
 import { View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { Button } from "./Button"
+import { Button } from "../Button"
 import { CameraIcon, MicIcon } from "lucide-react-native"
 import { useState } from "react"
-import { AudioModal } from "./AudioModal"
-import { PictureModal } from "./PictureModal"
+import { AudioModal } from "../AudioModal"
+import { PictureModal } from "../PictureModal"
 
 export function CreateBottomBar () {
     const { bottom } = useSafeAreaInsets()

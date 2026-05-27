@@ -6,10 +6,10 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useAudioRecorder, useAudioRecorderState, RecordingPresets, AudioModule, setAudioModeAsync, useAudioPlayer } from 'expo-audio';
 import { router } from 'expo-router';
 
-import { colors } from '../styles/colors';
-import { cn } from '../utils/cn';
-import { Button } from './Button';
-import { useCreateMeal } from '../hooks/useCreateMeal';
+import { colors } from '../../styles/colors';
+import { cn } from '../../utils/cn';
+import { useCreateMeal } from '../../hooks/mutations/useCreateMeal';
+import { Button } from '../Button';
 
 
 interface IAudioModalProps {

@@ -1,6 +1,6 @@
 import { Link } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
-import { formatMealTime } from "../utils/formatDate";
+import { formatMealTime } from "../../utils/formatDate";
 
 
 interface IMealCardProps {

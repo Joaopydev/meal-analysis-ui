@@ -6,9 +6,9 @@ import { Image, Modal, Text, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from "expo-image-picker"
 
-import { colors } from '../styles/colors';
-import { Button } from './Button';
-import { useCreateMeal } from '../hooks/useCreateMeal';
+import { colors } from '../../styles/colors';
+import { Button } from '../Button';
+import { useCreateMeal } from '../../hooks/mutations/useCreateMeal';
 import { router } from 'expo-router';
 
 interface IPictureModalProps {

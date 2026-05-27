@@ -1,8 +1,8 @@
 import { TouchableOpacity, View, Text } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { LogOutIcon} from "lucide-react-native"
-import { colors } from "../styles/colors"
-import { useAuth } from "../hooks/useAuth"
+import { colors } from "../../styles/colors"
+import { useAuth } from "../../contexts/AuthContext/useAuth"
 
 export function HomeHeader () {
 

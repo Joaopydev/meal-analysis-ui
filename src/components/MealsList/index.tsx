@@ -1,29 +1,15 @@
 import { View, Text, FlatList } from "react-native"
 import { useMemo } from "react"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import { useQuery } from "@tanstack/react-query"
 
-import { MealCard } from "./MealCard"
-import { DailyStats } from "./DailyStats"
-import { DataSwitcher } from "./DataSwitcher"
-import { useAuth } from "../hooks/useAuth"
-import { httpClient } from "../services/httpClient"
-import { useDate } from "../contexts/DateContext/useDate"
+import { MealCard } from "../MealCard"
+import { DailyStats } from "../DailyStats"
+import { DataSwitcher } from "../DataSwitcher"
+import { useAuth } from "../../contexts/AuthContext/useAuth"
+import { useDate } from "../../contexts/DateContext/useDate"
+import { useMeals } from "../../hooks/queries/useMeals"
+import { type Meal } from "../../types/Meal"
 
-
-type Meal = {
-    id: string,
-    name: string,
-    icon: string,
-    foods: {
-        name: string,
-        calories: number,
-        proteins: number,
-        carbohydrates: number,
-        fats: number,
-    }[],
-    createdAt: string
-}
 
 interface IMealsListHeaderProps {
     meals: Meal[]
@@ -98,19 +84,7 @@ function Separator() {
 export function MealsList() {
     const { bottom } = useSafeAreaInsets()
     const { currentDate } = useDate()
-
-    const { data: meals, isLoading } = useQuery({
-        queryKey: ['meals', currentDate],
-        queryFn: async () => {
-            const { data } = await httpClient.get<{ meals: Meal[] }>("/meals", {
-                params: {
-                    date: currentDate,
-                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-                }
-            })
-            return data.meals
-        },
-    })
+    const { meals, isLoading } = useMeals({ currentDate })
 
     return (
         <FlatList

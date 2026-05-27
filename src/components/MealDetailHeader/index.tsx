@@ -4,7 +4,7 @@ import { ChevronLeftIcon } from "lucide-react-native";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type MealDetailHeaderProps = {
+interface MealDetailHeaderProps {
     calories: number
 }
 

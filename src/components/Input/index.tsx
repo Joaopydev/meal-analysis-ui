@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View, KeyboardAvoidingView, Platform } from 'react-native';
-import { cn } from '../utils/cn';
-import { Eye, EyeOff, Key } from 'lucide-react-native';
+import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { cn } from '../../utils/cn';
+import { Eye, EyeOff } from 'lucide-react-native';
 
 interface IInputProps extends React.ComponentProps<typeof TextInput> {
   mask?: string;

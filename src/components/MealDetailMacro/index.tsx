@@ -1,11 +1,10 @@
 import { View, Text } from "react-native";
 
 
-type MealDetailMacroProps = {
+interface MealDetailMacroProps {
     carbohydrates: number
     proteins: number
     fats: number
-
     carbsPercentage: number
     proteinsPercentage: number
     fatsPercentage: number

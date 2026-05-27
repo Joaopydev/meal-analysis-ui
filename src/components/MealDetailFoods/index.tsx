@@ -1,7 +1,7 @@
 import { View, Text } from "react-native";
 
 
-type MealDeailFoodsProps = {
+interface MealDetailFoodsProps {
     name: string
     foods: {
         name: string
@@ -13,7 +13,7 @@ type MealDeailFoodsProps = {
     }[]
 }
 
-export function MealDetailFoods({ name, foods }: MealDeailFoodsProps) {
+export function MealDetailFoods({ name, foods }: MealDetailFoodsProps) {
     return (
         <View className="flex-col mt-12">
             <View className="flex flex-col justify-center gap-6">
@@ -26,7 +26,6 @@ export function MealDetailFoods({ name, foods }: MealDeailFoodsProps) {
                         <Text className="text-xl pl-3">
                             {`${food.quantity} ${food.name}`}
                         </Text>
-
                         <View className="h-px bg-gray-400" />
                     </View>
                 ))}

@@ -1,9 +1,9 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react-native"
 
-import { colors } from "../styles/colors";
-import { useDate } from "../contexts/DateContext/useDate";
-import { formatDateToPt } from "../utils/formatDate";
+import { colors } from "../../styles/colors";
+import { useDate } from "../../contexts/DateContext/useDate";
+import { formatDateToPt } from "../../utils/formatDate";
 
 export function DataSwitcher () {
     const { currentDate, onPreviousDate, onNextDate } = useDate()
